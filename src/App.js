@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 import buttonDefs from './buttonDefs';
 import Button from './Button'
@@ -14,7 +14,10 @@ const App = () => {
   //Add an extra property to the buttonDefs which hold the calc
   //elements
   const [answer, updateAnswer] = useState("")
-  const [mathComplete, updateMathComplete] = useState(false)
+  //const [mathComplete, updateMathComplete] = useState(false)
+  let mathComplete = useRef(false);
+  let userBack = useRef([])
+
   const [history, updateHistory] = useState([])
   const [memoryValue, updateMemoryValue] = useState(0)
 
@@ -29,15 +32,17 @@ const App = () => {
 
   const addToScreen = (value) =>{
     // handles insert function
-    if(mathComplete){
-     
-      updateMathComplete(false)
-      updateInput([value])
+    if(mathComplete.current){
+      mathComplete.current = false;
+      userBack.current = [value]
+     // updateInput([value])
       updateAnswer("")
     } else {
-      let tempInput = [...input]
-      updateInput(tempInput.concat(value))
-     
+      
+      let tempInput = [...userBack.current]
+      userBack.current = tempInput.concat(value)
+      updateInput(userBack.current)
+      
     }
 
   }
@@ -45,8 +50,8 @@ const App = () => {
   const operator = (value) =>{
     //handles operators by deciding if the answer should be added first
 
-    if(mathComplete){
-      //updateMathComplete(false)
+    if(mathComplete.current){
+      
       calculate("ans") //simulate the answer button
       
     }
@@ -58,12 +63,14 @@ const App = () => {
   const process = (value) =>{
     switch (value){
       case "clear":
-        updateInput([]);
+        userBack.current = []
+        updateInput(userBack.current);
         updateAnswer("");
         break;
 
       case "back":
-        updateInput(input.slice(0,input.length-1))
+        userBack.current = userBack.current.slice(0,userBack.current.length-1)
+        updateInput(userBack.current)
 
         break;
 
@@ -78,28 +85,30 @@ const App = () => {
     console.log(value)
     switch (value) {
       case "mPlus": { 
-        let converted = Number(input.join(''));
+        
+        let converted = Number(userBack.current.join(''));
         if (isNaN(converted)){
           updateAnswer("Error . . .")
           console.log("Not a Number")
         } else{
           updateMemoryValue(memoryValue + converted)
           switchMemorySymbol(true);
-          updateMathComplete(true)
+          mathComplete.current = true;
+          
           updateAnswer("")
         }
         return;
       }
 
       case "mSub": {
-        let converted = Number(input.join(''));
+        let converted = Number(userBack.current.join(''));
         if (isNaN(converted)){
           updateAnswer("Error . . .")
           console.log("Not a Number")
         } else{
           updateMemoryValue(memoryValue - converted)
           switchMemorySymbol(true);
-          updateMathComplete(true)
+          mathComplete.current = true;
         }
         return;
       } 
@@ -126,16 +135,16 @@ const App = () => {
    
     switch (value){
       case "equals":
-        if(!input) break;
+        if(!userBack.current) break;
         //TODO need to add error handling to catch invalid math
         try {
           // TODO this is crude as it will not handle special elements
           // such as root power etc.  To be developed
-          let joined = input.join('')
+          let joined = userBack.current.join('')
           let mathAnswer = evaluate(joined)
-        updateAnswer(mathAnswer);     
-        updateMathComplete(true);
-        updateHistory([...history, {input: input, answer: mathAnswer}])
+        updateAnswer(mathAnswer);   
+        mathComplete.current = true
+        updateHistory([...history, {input: userBack.current, answer: mathAnswer}])
         } catch (error) {
           updateAnswer("Error . . .")
           
@@ -146,11 +155,12 @@ const App = () => {
         //Return the last answer to the input for use
         console.log("get answer")
         if (history.length>0){
-
-          updateInput([history[history.length-1].answer.toString()])
+          userBack.current = [history[history.length-1].answer.toString()]
+          updateInput(userBack.current)
           updateAnswer("")
-          updateMathComplete(false)
-          console.log(`math complete : ${mathComplete}`)
+          mathComplete.current = false;
+          
+          console.log(`math complete : ${mathComplete.curent}`)
         }
         break;
       default:
@@ -163,7 +173,8 @@ const App = () => {
   const selectCallback = (func) =>{
     //select the appropriate callback function for the
     //function type of the button.
-
+      console.log("selectCallback fired")
+      
       switch(func){
         case "insert":
           return addToScreen;
@@ -184,7 +195,7 @@ const App = () => {
           return addToScreen;
           
       }
-    
+   
   }
 
   const symbolRow = () =>{
@@ -193,7 +204,6 @@ const App = () => {
         return <span>{symbol}</span>
     })
     return htmlSymbols
-
   }
 
   const switchMemorySymbol = (value) => {
@@ -209,7 +219,6 @@ const App = () => {
     
     } else if(value===false) {
       tempSymbols[0] = ""
-      
     }
 
     updateSymbols(tempSymbols)
