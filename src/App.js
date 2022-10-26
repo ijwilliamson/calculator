@@ -14,7 +14,7 @@ const App = () => {
   //Add an extra property to the buttonDefs which hold the calc
   //elements
   const [answer, updateAnswer] = useState("")
-  //const [mathComplete, updateMathComplete] = useState(false)
+  
   let mathComplete = useRef(false);
   let userBack = useRef([])
 
@@ -37,6 +37,7 @@ const App = () => {
       userBack.current = [value]
       updateInput(userBack.current)
       updateAnswer("")
+
     } else {
       
       let tempInput = [...userBack.current]
@@ -51,11 +52,8 @@ const App = () => {
     //handles operators by deciding if the answer should be added first
 
     if(mathComplete.current){
-      
-      calculate("ans") //simulate the answer button
-      
+      calculate("ans") //simulate the answer button 
     }
-
     addToScreen(value)
 
   }
@@ -87,9 +85,11 @@ const App = () => {
       case "mPlus": { 
         
         let converted = Number(userBack.current.join(''));
+
         if (isNaN(converted)){
           updateAnswer("Error . . .")
           console.log("Not a Number")
+
         } else{
           updateMemoryValue(memoryValue + converted)
           switchMemorySymbol(true);
@@ -102,9 +102,11 @@ const App = () => {
 
       case "mSub": {
         let converted = Number(userBack.current.join(''));
+
         if (isNaN(converted)){
           updateAnswer("Error . . .")
           console.log("Not a Number")
+
         } else{
           updateMemoryValue(memoryValue - converted)
           switchMemorySymbol(true);
@@ -116,8 +118,6 @@ const App = () => {
 
       case "mRecal":
         addToScreen(memoryValue);
-        // updateInput([memoryValue]);
-        // updateAnswer(null);
         return;
 
       case "mClear":
@@ -163,6 +163,7 @@ const App = () => {
           console.log(`math complete : ${mathComplete.curent}`)
         }
         break;
+
       default:
         break;
 
@@ -241,7 +242,6 @@ const App = () => {
       <div className='calculator'>
       <div className="background"/>
         <div className='screen'>
-          {/* <div className='input'><p>{input}</p></div> */}
           <div className='symbols'>{symbolRow()}</div>
           <div className='input'>{input}</div>
           <div className='answer'>{answer}</div>
