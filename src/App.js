@@ -35,7 +35,7 @@ const App = () => {
     if(mathComplete.current){
       mathComplete.current = false;
       userBack.current = [value]
-     // updateInput([value])
+      updateInput(userBack.current)
       updateAnswer("")
     } else {
       
@@ -173,8 +173,7 @@ const App = () => {
   const selectCallback = (func) =>{
     //select the appropriate callback function for the
     //function type of the button.
-      console.log("selectCallback fired")
-      
+            
       switch(func){
         case "insert":
           return addToScreen;
