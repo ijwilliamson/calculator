@@ -166,14 +166,14 @@ const buttonDefs = [
         label : "×",
         function : "operator",
         value : "*",
-        color: "white",
+        color: "black",
         working: true},
     {
         id : 29,
         label : "÷",
         function : "operator",
         value : "/",
-        color: "white",
+        color: "black",
         working: true},
     {
         id: 30,
@@ -201,14 +201,14 @@ const buttonDefs = [
         label : "+",
         function : "operator",
         value : "+",
-        color: "white",
+        color: "black",
         working: true},
     {
         id : 34,
         label : "-",
         function : "operator",
         value : "-",
-        color: "white",
+        color: "black",
         working: true},
     {
         id: 35,
@@ -229,21 +229,21 @@ const buttonDefs = [
         label: <>x10<sup>𝑥</sup></>,
         function : "insert",
         value : <sub>x10</sub>,
-        color: "white",
+        color: "black",
         working: true},
     {
         id : 38,
         label : "Ans",
         function : "calculate",
         value : "ans",
-        color: "white",
+        color: "orange",
         working: true},
     {
         id : 39,
         label : "=",
         function : "calculate",
         value : "equals",
-        color: "white",
+        color: "orange",
         working: true}
     
 ]
